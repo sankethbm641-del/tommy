@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="AI Medical Prescription Assistant and Medicine Reminder System. Analyze prescriptions, generate schedules, set daily reminders, and get health guidance.">
+    <title>AI Medical Prescription Assistant & Reminder System</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <!-- Main Stylesheet -->
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="app-container">
+
+        <!-- App Header -->
+        <header class="app-header" id="app-header">
+            <div class="header-logo">
+                <div class="logo-circle">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+                    </svg>
+                </div>
+                <div class="logo-info">
+                    <h1 class="logo-title" id="lbl-logo-title">Rx Care Assistant</h1>
+                    <p class="logo-subtitle" id="lbl-logo-subtitle">AI Prescription & Reminder Hub</p>
+                </div>
+            </div>
+
+            <div class="header-actions">
+                <!-- Voice Assistant Controls -->
+                <div class="voice-controls-bar" id="voice-controls-bar">
+                    <button class="btn-voice-toggle" id="btn-voice-toggle" title="Read Prescription Details Aloud">
+                        <svg class="icon-mic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" />
+                            <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
+                            <line x1="12" y1="19" x2="12" y2="23" />
+                            <line x1="8" y1="23" x2="16" y2="23" />
+                        </svg>
+                        <span id="btn-text-voice">Read Aloud</span>
+                    </button>
+                    <button class="btn-voice-stop" id="btn-voice-stop" style="display:none;"
+                        title="Stop Voice Playback">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="4" y="4" width="16" height="16" rx="2" ry="2" />
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Language Selector -->
+                <div class="lang-selector-wrapper">
+                    <label for="lang-select" class="sr-only" id="lbl-select-lang">Select Language</label>
+                    <select id="lang-select" class="lang-select">
+                        <option value="en">English (English)</option>
+                        <option value="hi">Hindi (हिंदी)</option>
+                        <option value="kn">Kannada (ಕನ್ನಡ)</option>
+                        <option value="ta">Tamil (தமிழ்)</option>
+                        <option value="te">Telugu (తెలుగు)</option>
+                    </select>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Layout Grid -->
+        <div class="app-layout">
+
+            <!-- LEFT PANEL: UPLOAD & PROCESSING -->
+            <aside class="layout-left">
+
+                <!-- Welcome Avatar -->
+                <div class="avatar-card" id="avatar-card">
+                    <img src="assets/avatar.png" alt="AI Medical Assistant Avatar" class="avatar-img" id="avatar-img">
+                    <div class="avatar-msg">
+                        <h3 id="avatar-greeting">Hello, I'm your Medical Assistant!</h3>
+                        <p id="avatar-subtext">Upload a prescription image or select a clinical sample below, and I'll
+                            analyze it for you.</p>
+                    </div>
+                </div>
+
+                <!-- Prescription Loader / Presets -->
+                <div class="panel-box" id="upload-panel">
+                    <h2 class="panel-title" id="title-load-rx">1. Load Prescription</h2>
+
+                    <!-- Drag & Drop Upload -->
+                    <div class="upload-zone" id="upload-zone">
+                        <input type="file" id="file-input" accept="image/*" class="file-input">
+                        <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                            <polyline points="17 8 12 3 7 8" />
+                            <line x1="12" y1="3" x2="12" y2="15" />
+                        </svg>
+                        <p class="upload-text" id="text-drag-drop">Drag & drop your prescription image here, or
+                            <span>browse</span>
+                        </p>
+                        <p class="upload-hint" id="text-upload-hint">Supports JPEG, PNG, or PDF formats</p>
+                    </div>
+
+                    <!-- Preset Samples (Click to load) -->
+                    <div class="presets-container">
+                        <div class="presets-label" id="text-sample-label">Or use clinical sample cases:</div>
+                        <div class="preset-buttons">
+                            <button class="btn-preset" id="preset-1">
+                                <span class="preset-icon">🩺</span>
+                                <div class="preset-info">
+                                    <strong id="btn-pr1-title">Case A: Chronic Disease</strong>
+                                    <span id="btn-pr1-desc">Diabetes & Blood Pressure</span>
+                                </div>
+                            </button>
+                            <button class="btn-preset" id="preset-2">
+                                <span class="preset-icon">🤒</span>
+                                <div class="preset-info">
+                                    <strong id="btn-pr2-title">Case B: Acute Infection</strong>
+                                    <span id="btn-pr2-desc">Bronchitis & Cough</span>
+                                </div>
+                            </button>
+                            <button class="btn-preset" id="preset-3">
+                                <span class="preset-icon">🩹</span>
+                                <div class="preset-info">
+                                    <strong id="btn-pr3-title">Case C: Pain Management</strong>
+                                    <span id="btn-pr3-desc">Muscle Injury Treatment</span>
+                                </div>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Analysis Progress Loader -->
+                <div class="panel-box scan-loader" id="scan-loader" style="display: none;">
+                    <div class="scan-bar-animation"></div>
+                    <div class="loader-spinner"></div>
+                    <h3 id="text-scanning-title">Extracting prescription details...</h3>
+                    <p id="text-scanning-desc">Our AI is reading medicine names, dosages, and clinician guidelines.</p>
+                </div>
+
+                <!-- Handwriting Verification Panel (Critical Rule #3: Unclear text confirmation) -->
+                <div class="panel-box verification-panel" id="verification-panel" style="display: none;">
+                    <h2 class="panel-title warning-title" id="title-verify-panel">
+                        <span class="warning-dot"></span> 2. Unclear Handwriting Review
+                    </h2>
+                    <p class="verification-desc" id="text-verify-desc">We flagged the following handwriting parts.
+                        Please check and correct them before finalizing:</p>
+
+                    <form id="handwriting-form" class="verification-form">
+                        <div class="form-group">
+                            <label for="input-patient" id="lbl-field-patient">Patient Name (Unclear: "J@hn D0e")</label>
+                            <input type="text" id="input-patient" value="John Doe" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="input-doctor" id="lbl-field-doctor">Clinician Name (Unclear: "Dr. A.
+                                Sm1th")</label>
+                            <input type="text" id="input-doctor" value="Dr. Arthur Smith" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="input-med1" id="lbl-field-med1">First Medicine (Unclear: "Metf0rm1n
+                                500mg")</label>
+                            <input type="text" id="input-med1" value="Metformin 500mg" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="input-med2" id="lbl-field-med2">Second Medicine (Unclear: "L1s1nopr1l
+                                10mg")</label>
+                            <input type="text" id="input-med2" value="Lisinopril 10mg">
+                        </div>
+
+                        <button type="submit" class="btn-submit-verify" id="btn-submit-verification">Confirm & Generate
+                            Schedule</button>
+                    </form>
+                </div>
+
+                <!-- Missed Dose Chat Assistant Panel -->
+                <div class="panel-box missed-dose-panel" id="missed-dose-panel">
+                    <h2 class="panel-title" id="title-missed-dose">Missed Dose Assistant</h2>
+                    <p class="missed-desc" id="text-missed-desc">Select a medicine to see missed dose guidance:</p>
+                    <div class="missed-dose-selectors" id="missed-dose-selectors">
+                        <!-- Populated dynamically -->
+                        <span class="placeholder-text" id="text-no-med-missed">No active medicines loaded. Load a
+                            prescription first.</span>
+                    </div>
+                    <div class="missed-dose-guidance" id="missed-dose-guidance-content" style="display: none;">
+                        <div class="guidance-head">
+                            <span class="guidance-icon">💡</span>
+                            <strong id="lbl-guidance-head">General Advice:</strong>
+                        </div>
+                        <p class="guidance-body" id="text-guidance-body">Select a medicine above for customized
+                            guidance.</p>
+                    </div>
+                </div>
+
+            </aside>
+
+            <!-- RIGHT PANEL: PRESCRIPTION DETAILS & ACTIONS -->
+            <main class="layout-right">
+
+                <!-- Placeholder when no data loaded -->
+                <div class="details-placeholder" id="details-placeholder">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                        <polyline points="14 2 14 8 20 8" />
+                        <line x1="16" y1="13" x2="8" y2="13" />
+                        <line x1="16" y1="17" x2="8" y2="17" />
+                        <polyline points="10 9 9 9 8 9" />
+                    </svg>
+                    <h2 id="text-placeholder-title">No Active Prescription Loaded</h2>
+                    <p id="text-placeholder-desc">Please drag and drop a prescription document, or select one of the
+                        patient cases on the left to display dosage schedules and clinical information.</p>
+                </div>
+
+                <!-- Prescription Output Area (Matches USER format) -->
+                <div class="prescription-output-container" id="prescription-output-container" style="display: none;">
+
+                    <!-- Output Section: Prescription Summary -->
+                    <section class="output-section card-style" id="summary-section">
+                        <div class="section-title-wrapper">
+                            <span class="title-icon">📝</span>
+                            <h2 id="out-title-summary">Prescription Summary</h2>
+                        </div>
+                        <div class="summary-details">
+                            <div class="summary-item">
+                                <span class="summary-label" id="out-lbl-patient">Patient:</span>
+                                <strong id="out-val-patient">-</strong>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label" id="out-lbl-doctor">Doctor:</span>
+                                <strong id="out-val-doctor">-</strong>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label" id="out-lbl-date">Date:</span>
+                                <strong id="out-val-date">-</strong>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Output Section: Medicines Explanations -->
+                    <section class="output-section card-style" id="medicines-section">
+                        <div class="section-title-wrapper">
+                            <span class="title-icon">💊</span>
+                            <h2 id="out-title-medicines">Medicines</h2>
+                        </div>
+                        <div class="medicines-cards-grid" id="medicines-cards-container">
+                            <!-- Populated dynamically with medicine cards -->
+                        </div>
+                    </section>
+
+                    <!-- Output Section: Daily Medicine Schedule -->
+                    <section class="output-section card-style" id="schedule-section">
+                        <div class="section-title-wrapper">
+                            <span class="title-icon">⏰</span>
+                            <h2 id="out-title-schedule">Daily Medicine Schedule</h2>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="schedule-table" id="schedule-table">
+                                <thead>
+                                    <tr>
+                                        <th id="out-th-time">Time</th>
+                                        <th id="out-th-med">Medicine</th>
+                                        <th id="out-th-dose">Dose</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="schedule-table-body">
+                                    <!-- Populated dynamically -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+
+                    <!-- Output Section: Health Information -->
+                    <section class="output-section card-style" id="health-section">
+                        <div class="section-title-wrapper">
+                            <span class="title-icon">❤️</span>
+                            <h2 id="out-title-health">Health Information</h2>
+                        </div>
+                        <div class="health-content-grid">
+                            <div class="health-info-block">
+                                <h4 id="out-lbl-conditions">Possible Conditions:</h4>
+                                <p id="out-val-conditions" class="conditions-text">-</p>
+                            </div>
+                            <div class="health-info-block">
+                                <h4 id="out-lbl-lifestyle">Lifestyle Advice:</h4>
+                                <ul id="out-val-lifestyle" class="lifestyle-list">
+                                    <!-- Populated dynamically -->
+                                </ul>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Output Section: Reminder Plan -->
+                    <section class="output-section card-style" id="reminders-section">
+                        <div class="section-title-wrapper">
+                            <span class="title-icon">🔔</span>
+                            <h2 id="out-title-reminders">Reminder Plan</h2>
+                        </div>
+
+                        <div class="reminder-prompt" id="reminder-prompt-box">
+                            <p id="text-reminder-prompt-question">Would you like me to create medicine reminders?</p>
+                            <div class="reminder-prompt-buttons">
+                                <button class="btn-reminder-yes" id="btn-reminder-yes">Yes, Enable Reminders</button>
+                            </div>
+                        </div>
+
+                        <div class="reminder-status-box" id="reminder-status-box" style="display: none;">
+                            <div class="reminder-status-head">
+                                <span class="active-badge">ACTIVE</span>
+                                <h4 id="text-reminders-active-title">Smart reminders are set! You will receive
+                                    notification alerts.</h4>
+                            </div>
+                            <div class="reminders-list-container" id="reminders-list-container">
+                                <!-- Populated dynamically with reminder details -->
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Output Section: Important Disclaimer (Rule #4: disclaimer at end) -->
+                    <footer class="prescription-disclaimer-card" id="prescription-disclaimer-card">
+                        <h3 class="disclaimer-title" id="out-title-disclaimer">Important Disclaimer</h3>
+                        <p class="disclaimer-text" id="out-val-disclaimer">
+                            This information is for educational purposes only and is not a medical diagnosis. Always
+                            consult a qualified healthcare professional before taking, stopping, or changing any
+                            medication.
+                        </p>
+                    </footer>
+
+                </div>
+            </main>
+        </div>
+
+        <!-- Alarm Reminder Notification Overlay -->
+        <div class="alarm-toast-wrapper" id="alarm-toast-wrapper">
+            <!-- Dynamically injected alarms -->
+        </div>
+
+    </div>
+
+    <!-- Main JavaScript App Logic -->
+    <script src="app.js"></script>
+</body>
+
+</html>
